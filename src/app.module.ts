@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DataSource } from 'typeorm';
 import { DatabaseModule } from 'db/database-sources';
-import { UserModule } from './user/user.module';
+import { UserModule } from './users/users.module';
 import { CatsService } from './cats/cat.service';
 import { CatsController } from './cats/cats.controller';
 
