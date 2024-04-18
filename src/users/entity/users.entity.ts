@@ -9,6 +9,9 @@ export class Users {
   @Column()
   email: string;
 
+  @Column({nullable: true})
+  password: string;
+
   @Column({
     length: 50,
   })
@@ -20,7 +23,7 @@ export class Users {
   @Column({ default: true })
   isActive: boolean;
 
-  @Column()
+  @Column({nullable: true})
   role: string;
 
   @OneToMany(() => Booking, (booking) => booking.users, {onDelete: 'CASCADE'})

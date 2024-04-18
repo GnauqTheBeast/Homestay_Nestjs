@@ -16,6 +16,17 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
+  async findOneByEmail(email: string): Promise<Users> {
+    try {
+      const user = await this.usersRepository.findOneBy({
+        email: email
+      })
+      return user 
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getOneById(id: number): Promise<Users> {
     try {
       const user = await this.usersRepository.findOneBy({
