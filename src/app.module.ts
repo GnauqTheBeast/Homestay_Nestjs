@@ -1,20 +1,21 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DataSource } from 'typeorm';
 import { DatabaseModule } from 'db/database-sources';
-import { UserModule } from './users/users.module';
-import { CatsService } from './cats/cat.service';
-import { CatsController } from './cats/cats.controller';
+import { UsersModule } from './users/users.module';
+import { ConfigModule } from '@nestjs/config';
+import { UsersController } from './users/users.controller';
+import { UsersService } from './users/users.service';
 
 @Module({
   imports: [
     DatabaseModule,
-    UserModule,
+    UsersModule,
   ],
-  controllers: [AppController, CatsController],
-  providers: [AppService, CatsService],
+  controllers: [AppController],
+  providers: [AppService],
 })
+
 export class AppModule {
   // constructor(private dataSource: DataSource) {}
 }

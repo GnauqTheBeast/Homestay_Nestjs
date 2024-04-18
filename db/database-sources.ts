@@ -1,9 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Users } from 'src/users/users.entity';
-import { Cat } from 'src/cats/cats.entity';
-
 @Module({
     imports: [
         TypeOrmModule.forRootAsync({
@@ -15,7 +12,8 @@ import { Cat } from 'src/cats/cats.entity';
                 username: process.env.USERNAME_DB,
                 password: process.env.PASSWORD_DB,
                 database: process.env.DATABASE,
-                entities: [Users, Cat],
+                entities: ['dist/**/*.entity.js'],
+                migrations: ['dist/db/migrations/*.js'],
                 synchronize: true,
                 debug: false,       
             }),
@@ -23,5 +21,4 @@ import { Cat } from 'src/cats/cats.entity';
         })
     ],
 })
-
 export class DatabaseModule {}

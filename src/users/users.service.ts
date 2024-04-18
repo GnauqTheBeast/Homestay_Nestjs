@@ -1,24 +1,49 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Users } from './users.entity';
+import { Users } from './entity/users.entity';
+import { UsersDto } from './dto/users.dto';
 
 @Injectable()
-export class UserService {
-  constructor(
-    @InjectRepository(Users)
-    private usersRepository: Repository<Users>,
-  ) {}
+export class UsersService {
+  constructor(@InjectRepository(Users) private usersRepository: Repository<Users>) {}
 
-  findAll(): Promise<Users[]> {
+  getHello(): string {
+    return 'Hello World!';
+  }
+
+  getAll(): Promise<Users[]> {
     return this.usersRepository.find();
   }
 
-  findOne(id: number): Promise<Users | null> {
-    return this.usersRepository.findOneBy({ id });
+  async getOneById(id: number): Promise<Users> {
+    try {
+      const user = await this.usersRepository.findOneBy({
+        id: id
+      })
+      return user;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  async remove(id: number): Promise<void> {
-    await this.usersRepository.delete(id);
+  createUser(usersDto: UsersDto): Promise<Users> {
+      const newUser = this.usersRepository.create(usersDto);
+      return this.usersRepository.save(newUser);
+  } 
+
+  async updateUser(id: number): Promise<Users> {
+    try {
+      const user = await this.usersRepository.findOneByOrFail({id});
+
+      return this.usersRepository.save(user);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteUser(id: number): Promise<Users> {
+      const user = await this.getOneById(id);
+      return this.usersRepository.remove(user);
   }
 }
