@@ -7,5 +7,6 @@ export class UsersDto {
     password: string
     isActive: boolean
     createdAt: Timestamp
+    phone: string
     role: string
 }

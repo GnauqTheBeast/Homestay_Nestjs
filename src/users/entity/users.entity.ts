@@ -1,11 +1,12 @@
 import { Booking } from 'src/booking/entity/booking.entity';
-import { Entity, Column, PrimaryGeneratedColumn, Timestamp, CreateDateColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, Index } from 'typeorm';
 
 @Entity()
 export class Users {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Index({ unique: true })
   @Column()
   email: string;
 
@@ -16,6 +17,12 @@ export class Users {
     length: 50,
   })
   fullName: string;
+
+  @Column({
+    length: 15,
+    nullable: true
+  })
+  phone: string
 
   @CreateDateColumn()
   createdAt: Date;
