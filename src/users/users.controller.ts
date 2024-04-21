@@ -8,18 +8,8 @@ import { UsersDto } from './dto/users.dto';
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
-    // @Post('create')
-    // async createUser(@Body() body: UsersDto): Promise<Users> {
-    //     return this.usersService.createUser(body);
+    // @Get(':id')
+    // async getOneById(@Param('id') id: number): Promise<Users> {
+    //     return this.usersService.getOneById(id);
     // }
-
-    @Get('get-all')
-    async getAllUser() {
-        return this.usersService.getAll();
-    }
-
-    @Get(':id')
-    async getOneById(@Param('id') id: number): Promise<Users> {
-        return this.usersService.getOneById(id)
-    }
 }

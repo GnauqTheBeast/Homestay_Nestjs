@@ -4,13 +4,30 @@ import { Repository } from 'typeorm';
 import { Users } from './entity/users.entity';
 import { LoginDto, RegisterDto } from 'src/auth/dto/auth.dto';
 import * as bcrypt from "bcrypt"
+import { httpErrors } from 'src/shareEntire/exception-filter/http-errors.const';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(Users) private usersRepository: Repository<Users>) {}
 
-  getAll(): Promise<Users[]> {
-    return this.usersRepository.find();
+  async getAll(page: number): Promise<Users[]> {
+    if(page < 1) {
+      throw new HttpException({
+        status: HttpStatus.NOT_FOUND,
+        error: 'Not found',
+      }, HttpStatus.FORBIDDEN);
+    }
+    const [users, userNum] = await this.usersRepository.findAndCount({
+      skip: 5 * (page - 1),
+      take: 5,
+    });
+
+    const maxPage = Math.ceil(userNum / 5)
+    if(page > maxPage) {
+      throw new HttpException(httpErrors.PAGE_NOT_EXIST, HttpStatus.FORBIDDEN);
+    }
+
+    return users;
   }
 
   async findOneByEmail(email: string): Promise<Users> {
@@ -48,7 +65,13 @@ export class UsersService {
         error: 'Password confirmation do not match',
       }, HttpStatus.FORBIDDEN);
     }
-
+    // check role 
+    if (registerDto.role === "admin") {
+      throw new HttpException({
+        status: HttpStatus.NOT_ACCEPTABLE,
+        error: 'Not permission',
+      }, HttpStatus.FORBIDDEN);
+    }
     // bcrypt hash password
     const saltRounds = +process.env.SAlT_ROUNDS;
     const myPlaintextPassword = registerDto.password;
@@ -56,7 +79,7 @@ export class UsersService {
     registerDto.password = hash;
     const newUser = this.usersRepository.create(registerDto);
 
-    return this.usersRepository.save(newUser)
+    return this.usersRepository.save(newUser);
   }
 
   async loginUser(loginDto: LoginDto): Promise<Users> {
