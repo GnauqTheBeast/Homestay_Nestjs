@@ -1,14 +1,19 @@
-import { HttpCode, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Users } from './entity/users.entity';
 import { LoginDto, RegisterDto } from 'src/auth/dto/auth.dto';
 import * as bcrypt from "bcrypt"
 import { httpErrors } from 'src/shareEntire/exception-filter/http-errors.const';
+import { generateToken } from 'src/shareEntire/utils';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(Users) private usersRepository: Repository<Users>) {}
+  constructor(
+    @InjectRepository(Users) private usersRepository: Repository<Users>,
+    private readonly configService: ConfigService
+  ) {}
 
   async getAll(page: number): Promise<Users[]> {
     if(page < 1) {
@@ -65,13 +70,6 @@ export class UsersService {
         error: 'Password confirmation do not match',
       }, HttpStatus.FORBIDDEN);
     }
-    // check role 
-    if (registerDto.role === "admin") {
-      throw new HttpException({
-        status: HttpStatus.NOT_ACCEPTABLE,
-        error: 'Not permission',
-      }, HttpStatus.FORBIDDEN);
-    }
     // bcrypt hash password
     const saltRounds = +process.env.SAlT_ROUNDS;
     const myPlaintextPassword = registerDto.password;
@@ -82,7 +80,7 @@ export class UsersService {
     return this.usersRepository.save(newUser);
   }
 
-  async loginUser(loginDto: LoginDto): Promise<Users> {
+  async loginUser(loginDto: LoginDto): Promise<any> {
     const userEmail = loginDto.email;
     const existedUser = await this.findOneByEmail(userEmail);
     // user existed
@@ -100,7 +98,22 @@ export class UsersService {
         error: 'Wrong password',
       }, HttpStatus.FORBIDDEN);
     }
-    return existedUser;
+
+    //generate access_token and refresh_token
+    const userId = existedUser.id;
+    const payload = {id: userId, userEmail: userEmail};
+    const expired_at = Date.now() + (+process.env.ACCESS_TOKEN_EXPIRE_IN_SEC * 1000);
+
+    const access_token = generateToken(payload, {
+      // expiresIn: Number(this.configService.get('api.accessTokenExpireInSec')),
+      expiresIn: (+process.env.ACCESS_TOKEN_EXPIRE_IN_SEC * 1000),
+    });
+    const refresh_token = generateToken(payload, {
+      // expiresIn: Number(this.configService.get('api.refreshTokenExpireInSec')),
+      expiresIn: (+process.env.REFRESH_TOKEN_EXPIRE_IN_SEC * 1000),
+    });
+
+    return { expired_at, access_token, refresh_token, userId, userEmail };
   }
 
   async updateUser(id: number): Promise<Users> {

@@ -1,5 +1,5 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { LoginDto, RegisterDto } from './dto/auth.dto';
+import { LoginDto, RefreshTokenDto, RegisterDto } from './dto/auth.dto';
 import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -15,11 +15,19 @@ export class AuthController {
         return this.authService.userLogin(loginDto);
     }
 
-    // signup
     @Post("register")
     @HttpCode(HttpStatus.CREATED)
     async userRegister(@Body() registerDto: RegisterDto) {
         const userRegister = await this.authService.userRegister(registerDto)
         return userRegister;
+    }
+
+    @Post('refresh-token')
+    async refreshToken(@Body() refreshTokenDto: RefreshTokenDto){
+        const newAccessToken = await this.authService.refreshToken(refreshTokenDto);
+        return {
+            success: true,
+            content: newAccessToken,
+        };
     }
 }

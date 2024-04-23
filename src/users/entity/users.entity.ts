@@ -1,5 +1,10 @@
 import { Booking } from 'src/booking/entity/booking.entity';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, Index } from 'typeorm';
+export enum UserRole {
+  ADMIN = "admin",
+  CUSTOMER = "customer",
+  HOST = "host"
+}
 
 @Entity()
 export class Users {
@@ -30,8 +35,12 @@ export class Users {
   @Column({ default: true })
   isActive: boolean;
 
-  @Column({nullable: true})
-  role: string;
+  @Column({
+      type: "enum",
+      enum: UserRole,
+      default: UserRole.CUSTOMER
+  })
+  role: UserRole;
 
   @OneToMany(() => Booking, (booking) => booking.users, {onDelete: 'CASCADE'})
   booking: Booking

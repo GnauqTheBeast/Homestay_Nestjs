@@ -28,11 +28,14 @@ export class Homestay {
   @Column()
   price: number;
 
-  @Column()
+  @Column({ default: 0 })
   bookingCount: number;
 
-  @Column()
+  @Column({ default: 0 })
   viewCount: number;
+
+  @Column()
+  slug: string;
 
   @OneToMany(() => Booking, (booking) => booking.homestay)
   booking: Booking

@@ -58,12 +58,11 @@ export class RegisterDto {
         required : true
     })
     phone: string
+}
 
+export class RefreshTokenDto {
     @IsString()
     @IsNotEmpty()
-    @ApiProperty({
-        example: "customer",
-        required : true 
-    })
-    role: string
-}
+    refreshToken: string;
+  }
+  

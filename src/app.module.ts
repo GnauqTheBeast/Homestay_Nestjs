@@ -5,6 +5,8 @@ import { DatabaseModule } from 'db/database-sources';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
+import { CategoryModule } from './category/category.module';
+import { HomestayModule } from './homestay/homestay.module';
 
 @Module({
   imports: [
@@ -12,6 +14,8 @@ import { AdminModule } from './admin/admin.module';
     UsersModule,
     AuthModule,
     AdminModule,
+    CategoryModule,
+    HomestayModule,
   ],
   controllers: [AppController],
   providers: [AppService],
