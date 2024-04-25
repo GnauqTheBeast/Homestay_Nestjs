@@ -28,6 +28,11 @@ export class Homestay {
   @Column()
   price: number;
 
+  @Column({
+    array: true
+  })
+  images: string;
+
   @Column({ default: 0 })
   bookingCount: number;
 

@@ -36,9 +36,9 @@ export class Users {
   isActive: boolean;
 
   @Column({
-      type: "enum",
-      enum: UserRole,
-      default: UserRole.CUSTOMER
+    type: "enum",
+    enum: UserRole,
+    default: UserRole.CUSTOMER
   })
   role: UserRole;
 

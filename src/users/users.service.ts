@@ -5,8 +5,9 @@ import { Users } from './entity/users.entity';
 import { LoginDto, RegisterDto } from 'src/auth/dto/auth.dto';
 import * as bcrypt from "bcrypt"
 import { httpErrors } from 'src/shareEntire/exception-filter/http-errors.const';
-import { generateToken } from 'src/shareEntire/utils';
+import { generateToken, verifyJWT } from 'src/shareEntire/utils';
 import { ConfigService } from '@nestjs/config';
+import { UserRole } from './entity/users.entity';
 
 @Injectable()
 export class UsersService {
@@ -42,7 +43,9 @@ export class UsersService {
     return user; 
   }
 
-  async getOneById(id: number): Promise<Users> {
+  async getOneById(access_token: string): Promise<Users> {
+    const resp = await verifyJWT(access_token)
+    const id = resp.id;
     try {
       const user = await this.usersRepository.findOneBy({
         id: id
@@ -53,7 +56,7 @@ export class UsersService {
     }
   }
 
-  async createUser(registerDto: RegisterDto): Promise<Users> {
+  async createUser(registerDto: RegisterDto, role: UserRole = UserRole.CUSTOMER): Promise<Users> {
     const userEmail = registerDto.email;
     const existedUser = await this.findOneByEmail(userEmail);
     // user existed
@@ -75,6 +78,8 @@ export class UsersService {
     const myPlaintextPassword = registerDto.password;
     const hash = bcrypt.hashSync(myPlaintextPassword, saltRounds);
     registerDto.password = hash;
+    registerDto.role = role; 
+
     const newUser = this.usersRepository.create(registerDto);
 
     return this.usersRepository.save(newUser);
@@ -101,7 +106,8 @@ export class UsersService {
 
     //generate access_token and refresh_token
     const userId = existedUser.id;
-    const payload = {id: userId, userEmail: userEmail};
+    const userRole = existedUser.role;
+    const payload = {id: userId, userEmail: userEmail, role: userRole};
     const expired_at = Date.now() + (+process.env.ACCESS_TOKEN_EXPIRE_IN_SEC * 1000);
 
     const access_token = generateToken(payload, {
@@ -126,8 +132,8 @@ export class UsersService {
     }
   }
 
-  async deleteUser(id: number): Promise<Users> {
-      const user = await this.getOneById(id);
-      return this.usersRepository.remove(user);
-  }
+  // async deleteUser(id: number): Promise<Users> {
+  //     const user = await this.getOneById(id);
+  //     return this.usersRepository.remove(user);
+  // }
 } 

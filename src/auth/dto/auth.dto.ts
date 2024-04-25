@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsEmail, IsNotEmpty, IsString } from "class-validator"
+import { IsEmail, IsEnum, IsNotEmpty, IsString } from "class-validator"
+import { UserRole } from "src/users/entity/users.entity"
 
 export class LoginDto {
     @IsEmail()
@@ -58,11 +59,15 @@ export class RegisterDto {
         required : true
     })
     phone: string
+
+    @IsEnum(UserRole)
+    @IsNotEmpty()
+    role: UserRole
 }
 
 export class RefreshTokenDto {
     @IsString()
     @IsNotEmpty()
-    refreshToken: string;
-  }
+    refresh_token: string;
+}
   

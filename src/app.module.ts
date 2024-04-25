@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from 'db/database-sources';
@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { CategoryModule } from './category/category.module';
 import { HomestayModule } from './homestay/homestay.module';
+import { LoginMiddleware } from './middlewares/login.middleware';
 
 @Module({
   imports: [
@@ -21,6 +22,10 @@ import { HomestayModule } from './homestay/homestay.module';
   providers: [AppService],
 })
 
-export class AppModule {
-  // constructor(private dataSource: DataSource) {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoginMiddleware)
+      .forRoutes('auth');
+  }
 }

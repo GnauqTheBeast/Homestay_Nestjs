@@ -6,7 +6,7 @@ export const generateToken = (payload, option={}) => {
     return jwt.sign(payload, secret, option);
 }
 
-export const verifyRefreshJWT = (tokenOld, option={}) => {
+export const verifyJWT = (tokenOld, option={}) => {
     const secret = configuration().api.accessJwtSecretKey;
     return jwt.verify(tokenOld, secret, option);
 };
