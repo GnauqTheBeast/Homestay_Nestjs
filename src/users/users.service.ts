@@ -3,11 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Users } from './entity/users.entity';
 import { LoginDto, RegisterDto } from 'src/auth/dto/auth.dto';
-import * as bcrypt from "bcrypt"
 import { httpErrors } from 'src/shareEntire/exception-filter/http-errors.const';
 import { generateToken, verifyJWT } from 'src/shareEntire/utils';
 import { ConfigService } from '@nestjs/config';
 import { UserRole } from './entity/users.entity';
+import { EditUsersDto } from './dto/users.dto';
+import * as bcrypt from "bcrypt";
+import { hashPassword } from 'src/shareEntire/utils/hash-password';
 
 @Injectable()
 export class UsersService {
@@ -44,7 +46,7 @@ export class UsersService {
   }
 
   async getOneById(access_token: string): Promise<Users> {
-    const resp = await verifyJWT(access_token)
+    const resp = await verifyJWT(access_token);
     const id = resp.id;
     try {
       const user = await this.usersRepository.findOneBy({
@@ -73,11 +75,9 @@ export class UsersService {
         error: 'Password confirmation do not match',
       }, HttpStatus.FORBIDDEN);
     }
-    // bcrypt hash password
-    const saltRounds = +process.env.SAlT_ROUNDS;
-    const myPlaintextPassword = registerDto.password;
-    const hash = bcrypt.hashSync(myPlaintextPassword, saltRounds);
-    registerDto.password = hash;
+    // hash password
+    registerDto.password = hashPassword(registerDto.password);
+    // role
     registerDto.role = role; 
 
     const newUser = this.usersRepository.create(registerDto);
@@ -127,6 +127,28 @@ export class UsersService {
       const user = await this.usersRepository.findOneByOrFail({id});
 
       return this.usersRepository.save(user);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async editUser(editUsersDto: EditUsersDto, access_token: string): Promise<any> {
+    try {
+      const resp = await verifyJWT(access_token);
+      const id = resp.id;
+
+      editUsersDto.password = hashPassword(editUsersDto.password)
+
+      await this.usersRepository
+        .createQueryBuilder()
+        .update(Users)
+        .set(editUsersDto)
+        .where("id = :id", { id: id })
+        .execute()
+      
+      return this.usersRepository.findOneBy({
+        id: id
+      })
     } catch (error) {
       throw error;
     }
