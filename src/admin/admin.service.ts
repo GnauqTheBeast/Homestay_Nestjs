@@ -3,7 +3,7 @@ import { LoginDto, RegisterDto } from 'src/auth/dto/auth.dto';
 import { UserRole, Users } from 'src/users/entity/users.entity';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from "bcrypt";
-import { UsersDto } from 'src/users/dto/users.dto';
+import { UsersDto, changeActiveUsersDto } from 'src/users/dto/users.dto';
 import { generateToken } from 'src/shareEntire/utils';
 
 @Injectable()
@@ -61,5 +61,9 @@ export class AdminService {
 
     async createSpecialUsers(registerDto: RegisterDto, role: UserRole): Promise<Users> {
         return this.usersService.createUser(registerDto, role);
+    }
+
+    async changeActiveUsers(changeActiveUsers: changeActiveUsersDto, id: number): Promise<Users> {
+        return this.usersService.changeActiveUsers(changeActiveUsers, id);
     }
 }

@@ -7,14 +7,14 @@ export class LoginDto {
     @IsNotEmpty()
     @ApiProperty({
         required: true,
-        example: "quangnguyenngoc314@gmail.com",
+        example: "tranthuha@gmail.com",
     })
     email: string
     @IsString()
     @IsNotEmpty()
     @ApiProperty({
         required: true,
-        example: "quangdeptraiso1VN",
+        example: "quangnguyen",
     })
     password: string
 }
@@ -23,7 +23,7 @@ export class RegisterDto {
     @IsString()
     @IsNotEmpty()
     @ApiProperty({
-        example: "quangnguyenngoc314@gmail.com",
+        example: "tranthuha@gmail.com",
         required : true
     })
     email: string
@@ -39,7 +39,7 @@ export class RegisterDto {
     @IsString()
     @IsNotEmpty()
     @ApiProperty({
-        example: "quangdeptraiso1VN",
+        example: "quangnguyen",
         required : true
     })
     password: string

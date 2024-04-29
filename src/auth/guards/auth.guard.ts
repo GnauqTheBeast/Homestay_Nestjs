@@ -10,16 +10,21 @@ export class AuthGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         try {
             const request = context.switchToHttp().getRequest();
-            const { access_token }: any = request.headers;
-            if (!access_token || access_token.trim() === '') {
-                throw new UnauthorizedException('Please provide access_token');
+            if (!request.headers.authorization) {
+                throw new UnauthorizedException('no access_token');
             }
+
+            const access_token = request.headers.authorization.replace("Bearer ", "");
+            if (!access_token || access_token.trim() === '') {
+                throw new UnauthorizedException('no access_token');
+            }
+
             const resp = await verifyJWT(access_token);
             request.decodedData = resp;
+
             return true;
         } catch (error) {
-            console.log('auth error - ', error.message);
-            throw new ForbiddenException(error.message || 'session expired! Please sign In');
+            throw new ForbiddenException(error.message || 'session expired! please sign In');
         }
     }
 }

@@ -4,22 +4,28 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException,
     import { verifyJWT } from 'src/shareEntire/utils';
     
     @Injectable()
-    export class AdminGuard implements CanActivate {
+    export class HostGuard implements CanActivate {
         constructor(private readonly authService: AuthService) {}
     
         async canActivate(context: ExecutionContext): Promise<boolean> {
             try {
                 const request = context.switchToHttp().getRequest();
-                const { access_token }: any = request.headers;
-                if (!access_token || access_token.trim() === '') {
-                    throw new UnauthorizedException('Please provide access_token');
-                }
-                const resp = await verifyJWT(access_token);
-                request.decodedData = resp;
-                if(resp.role != "admin") {
-                    throw new ForbiddenException('You are not admin');
-                }
-                return true;
+            if (!request.headers.authorization) {
+                throw new UnauthorizedException('no access_token');
+            }
+
+            const access_token = request.headers.authorization.replace("Bearer ", "");
+            if (!access_token || access_token.trim() === '') {
+                throw new UnauthorizedException('Please provide access_token');
+            }
+
+            const resp = await verifyJWT(access_token);
+            request.decodedData = resp;
+            if(resp.role == "customer") {
+                throw new ForbiddenException('You are not host');
+            }
+
+            return true;
             } catch (error) {
                 throw new ForbiddenException(error.message || 'session expired! Please sign In');
             }

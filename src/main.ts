@@ -12,10 +12,15 @@ async function bootstrap() {
     .setTitle('Homestay')
     .setDescription('The Homestay description')
     .setVersion('1.0')
+    .addBearerAuth({
+      type: 'http',
+      name: 'Authorization', 
+      in: 'header', 
+    })
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api', app, document)
 
   await app.listen(process.env.API_PORT);
 }

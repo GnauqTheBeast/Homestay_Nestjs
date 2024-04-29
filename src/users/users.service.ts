@@ -7,7 +7,7 @@ import { httpErrors } from 'src/shareEntire/exception-filter/http-errors.const';
 import { generateToken, verifyJWT } from 'src/shareEntire/utils';
 import { ConfigService } from '@nestjs/config';
 import { UserRole } from './entity/users.entity';
-import { EditUsersDto } from './dto/users.dto';
+import { EditUsersDto, changeActiveUsersDto } from './dto/users.dto';
 import * as bcrypt from "bcrypt";
 import { hashPassword } from 'src/shareEntire/utils/hash-password';
 
@@ -128,7 +128,10 @@ export class UsersService {
 
       return this.usersRepository.save(user);
     } catch (error) {
-      throw error;
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: 'Cant update',
+      }, HttpStatus.FORBIDDEN);
     }
   }
 
@@ -144,13 +147,36 @@ export class UsersService {
         .update(Users)
         .set(editUsersDto)
         .where("id = :id", { id: id })
-        .execute()
+        .execute();
       
       return this.usersRepository.findOneBy({
         id: id
       })
     } catch (error) {
-      throw error;
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: 'Wrong password',
+      }, HttpStatus.FORBIDDEN);
+    }
+  }
+
+  async changeActiveUsers(changeActiveUsers: changeActiveUsersDto, id: number) {
+    try {  
+      await this.usersRepository
+      .createQueryBuilder()
+      .update(Users)
+      .set(changeActiveUsers)
+      .where("id = :id", { id: id })
+      .execute();
+    
+      return this.usersRepository.findOneByOrFail({
+        id: id,
+      });
+    } catch (error) {
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: error,
+      }, HttpStatus.FORBIDDEN);
     }
   }
 

@@ -5,16 +5,18 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { ConfigModule } from '@nestjs/config';
 import * as dotenv from 'dotenv';
-import { AuthModule } from 'src/auth/auth.module';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { AuthService } from 'src/auth/auth.service';
+import { HomestayService } from 'src/homestay/homestay.service';
+import { HomestayModule } from 'src/homestay/homestay.module';
+import { Homestay } from 'src/homestay/entity/homestay.entity';
 
 dotenv.config()
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Users]), ConfigModule],
+  imports: [TypeOrmModule.forFeature([Users, Homestay]), ConfigModule],
   controllers: [UsersController],
-  providers: [UsersService, AuthGuard, AuthService],
+  providers: [UsersService, AuthGuard, AuthService, HomestayService],
   exports: [TypeOrmModule, UsersService]
 })
 export class UsersModule {}

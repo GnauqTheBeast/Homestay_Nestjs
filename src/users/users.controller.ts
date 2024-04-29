@@ -1,43 +1,61 @@
-import { Body, Controller, Get, Header, Headers, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Users } from './entity/users.entity';
-import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { EditUsersDto, UsersDto } from './dto/users.dto';
-import { RegisterDto } from 'src/auth/dto/auth.dto';
+import { HostGuard } from 'src/auth/guards/host.guard';
+import { HomestayService } from 'src/homestay/homestay.service';
+import { CreateHomestayDto, EditHomestayDto } from 'src/homestay/dto/homestay.dto';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-    constructor(private readonly usersService: UsersService) {}
+    constructor(
+        private readonly usersService: UsersService,
+        private readonly homestayService: HomestayService
+    ) {}
 
     @UseGuards(AuthGuard)
-    @ApiHeader({
-        name: 'access_token',
-        description: 'access_token',
-    })
-    @Get('/me')
-    async getProfile(@Headers('access_token') access_token: string): Promise<Users> {
+    @ApiBearerAuth()
+    @Get('me')
+    async getProfile(@Req() req: Request): Promise<Users> {
+        const authorization = req.headers['authorization'];
+        const access_token = authorization.replace("Bearer ", "");
         return this.usersService.getOneById(access_token);
     }
 
     @UseGuards(AuthGuard)
-    @ApiHeader({
-        name: 'access_token',
-        description: 'access_token',
-    })
-    @Get('/me/edit')
-    async editProfile(@Headers('access_token') access_token: string): Promise<Users> {
+    @ApiBearerAuth()
+    @Get('me/edit')
+    async editProfile(@Req() req: Request): Promise<any> {
+        const authorization = req.headers['authorization'];
+        const access_token = authorization.replace("Bearer ", "");
         return this.usersService.getOneById(access_token);
     }
 
     @UseGuards(AuthGuard)
-    @ApiHeader({
-        name: 'access_token',
-        description: 'access_token',
-    })
-    @Patch('/me/edit')
-    async putEditProfile(@Body() editUsersDto: EditUsersDto, @Headers('access_token') access_token: string): Promise<Users> {
+    @ApiBearerAuth()
+    @Patch('me/edit')
+    async putEditProfile(@Body() editUsersDto: EditUsersDto, @Req() req: Request): Promise<Users> {
+        const authorization = req.headers['authorization'];
+        const access_token = authorization.replace("Bearer ", "");
         return this.usersService.editUser(editUsersDto, access_token);
     }
+
+    @UseGuards(HostGuard)
+    @ApiBearerAuth()
+    @Post('host/create-homestay')
+    async createHomestay(@Body() createHomestayDto: CreateHomestayDto, @Req() req: Request): Promise<any> {
+        const authorization = req.headers['authorization'];
+        const access_token = authorization.replace("Bearer ", "");
+        return this.homestayService.createHomestay(createHomestayDto, access_token);
+    }
+
+    // @UseGuards(HostGuard)
+    // @ApiBearerAuth()
+    // @Patch('host/edit-homestay')
+    // async editHomestay(@Body() editHomestayDto: EditHomestayDto): Promise<any> {
+    //     return this.homestayService.editHomestay(editHomestayDto);
+    // }
 }

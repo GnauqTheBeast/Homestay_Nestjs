@@ -13,6 +13,9 @@ export class Booking {
   @Column()
   price: number;
 
+  @CreateDateColumn()
+  bookedAt: Date;
+
   @ManyToOne(() => Users, (users) => users.booking)
   users: Users
 

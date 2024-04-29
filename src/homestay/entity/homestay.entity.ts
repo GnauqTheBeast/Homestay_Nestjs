@@ -1,5 +1,8 @@
+import slugify from 'slugify';
 import { Booking } from 'src/booking/entity/booking.entity';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany } from 'typeorm';
+import { Images } from 'src/images/entity/images.entity';
+import { Users } from 'src/users/entity/users.entity';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, BeforeInsert, BeforeUpdate, UpdateDateColumn, OneToOne, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Homestay {
@@ -8,28 +11,33 @@ export class Homestay {
 
   @Column({
     length: 50,
+    unique: true,
   })
   name: string;
 
   @CreateDateColumn()
   createdAt: Date;
 
+  @UpdateDateColumn()
+  updated_at: Date;
+
   @Column({
     length: 256,
   })
   address: string;
 
-  @Column()
+  @Column({ nullable: true })
   rateStar: number
 
   @Column({ default: true })
   isActive: boolean;
 
-  @Column()
+  @Column({ nullable: false })
   price: number;
 
   @Column({
-    array: true
+    nullable: true,
+    default: "https://unsplash.com/photos/green-plants-on-brown-concrete-building-KLOW1bD616Y"
   })
   images: string;
 
@@ -39,9 +47,21 @@ export class Homestay {
   @Column({ default: 0 })
   viewCount: number;
 
-  @Column()
+  @Column({ type: "text", nullable: false })
   slug: string;
 
-  @OneToMany(() => Booking, (booking) => booking.homestay)
+  @BeforeInsert()
+  @BeforeUpdate()
+  generateSlug() {
+    this.slug = slugify(this.name, { lower: true });
+  }
+
+  @ManyToOne(() => Users, (host) => host.homestay)
+  host: Users
+
+  @OneToMany(() => Booking, (booking) => booking.homestay, {onDelete: 'CASCADE'})
   booking: Booking
+
+  @OneToMany(() => Images, (images) => images.homestay)
+  photos: Images[]
 }
