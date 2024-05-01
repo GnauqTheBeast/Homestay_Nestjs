@@ -88,5 +88,44 @@ export class HomestayService {
           throw error;
         }
     }
-    
+
+    async softDeleteHomestay(homestayId: number, access_token: string) {
+      try {  
+        const resp = await verifyJWT(access_token);
+        const userId = resp.id;
+
+        const existedHomestay = await this.homestayRepository.findOne({
+          where: { id: homestayId },
+          relations: ['host'] 
+        });
+
+        console.log(existedHomestay);
+
+        if (!existedHomestay) {
+          throw new HttpException({
+            status: HttpStatus.FORBIDDEN,
+            error: 'This homestay not existed',
+          }, HttpStatus.FORBIDDEN);
+        }
+
+        if (userId != existedHomestay.host.id) {
+          throw new HttpException({
+            status: HttpStatus.FORBIDDEN,
+            error: 'not permission',
+          }, HttpStatus.FORBIDDEN);
+        }
+
+        await this.homestayRepository
+          .createQueryBuilder()
+          .delete()
+          .from(Homestay)
+          .where("id = :id", { id: homestayId })
+          .execute()
+      } catch (error) {
+        throw new HttpException({
+          status: HttpStatus.FORBIDDEN,
+          error: error,
+        }, HttpStatus.FORBIDDEN);
+      }
+    }
 }

@@ -30,6 +30,12 @@ export class Users {
   })
   phone: string
 
+  @Column({ default: false })
+  public isPhoneNumberConfirmed: boolean;
+
+  @Column({ default: false })
+  public isOtpConfirmed: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
 

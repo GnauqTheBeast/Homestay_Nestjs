@@ -107,19 +107,28 @@ export class UsersService {
     //generate access_token and refresh_token
     const userId = existedUser.id;
     const userRole = existedUser.role;
-    const payload = {id: userId, userEmail: userEmail, role: userRole};
+    const userIsOtpConfirmed = existedUser.isOtpConfirmed;
+    const userIsPhoneConfirmed = existedUser.isPhoneNumberConfirmed;
+    const userPhone = existedUser.phone;
+
+    const payload = {
+      id: userId, 
+      userEmail: userEmail, 
+      role: userRole, 
+      userPhone: userPhone, 
+      userIsPhoneConfirmed: userIsPhoneConfirmed,
+      userIsOtpConfirmed: userIsOtpConfirmed
+    };
     const expired_at = Date.now() + (+process.env.ACCESS_TOKEN_EXPIRE_IN_SEC * 1000);
 
     const access_token = generateToken(payload, {
-      // expiresIn: Number(this.configService.get('api.accessTokenExpireInSec')),
       expiresIn: (+process.env.ACCESS_TOKEN_EXPIRE_IN_SEC * 1000),
     });
     const refresh_token = generateToken(payload, {
-      // expiresIn: Number(this.configService.get('api.refreshTokenExpireInSec')),
       expiresIn: (+process.env.REFRESH_TOKEN_EXPIRE_IN_SEC * 1000),
     });
 
-    return { expired_at, access_token, refresh_token, userId, userEmail };
+    return { expired_at, access_token, refresh_token, userId, userEmail};
   }
 
   async updateUser(id: number): Promise<Users> {
@@ -180,8 +189,21 @@ export class UsersService {
     }
   }
 
-  // async deleteUser(id: number): Promise<Users> {
-  //     const user = await this.getOneById(id);
-  //     return this.usersRepository.remove(user);
-  // }
+  async otpConfirmed(userEmail: string) {
+    try {  
+      await this.usersRepository
+      .createQueryBuilder()
+      .update(Users)
+      .set({isOtpConfirmed: true})
+      .where("email = :email", { email: userEmail })
+      .execute();
+
+    } catch (error) {
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: error,
+      }, HttpStatus.FORBIDDEN);
+    }
+  }
+
 } 

@@ -60,4 +60,13 @@ export class UsersController {
         const access_token = authorization.replace("Bearer ", "");
         return this.homestayService.editHomestay(editHomestayDto, Number(homestayId), access_token);
     }
+
+    @UseGuards(HostGuard)
+    @ApiBearerAuth()
+    @Patch('host/delete-homestay/:homestayId')
+    async softDeleteHomestay(@Param('homestayId') homestayId: string, @Req() req: Request): Promise<any> {
+        const authorization = req.headers['authorization'];
+        const access_token = authorization.replace("Bearer ", "");
+        return this.homestayService.softDeleteHomestay(Number(homestayId), access_token);
+    }
 }

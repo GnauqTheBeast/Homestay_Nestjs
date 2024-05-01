@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsEmail, IsEnum, IsNotEmpty, IsString } from "class-validator"
+import { IsEmail, IsEnum, IsNotEmpty, IsString, Matches } from "class-validator"
 import { UserRole } from "src/users/entity/users.entity"
 
 export class LoginDto {
@@ -54,6 +54,7 @@ export class RegisterDto {
 
     @IsString()
     @IsNotEmpty()
+    @Matches(/^\+[1-9]\d{1,14}$/)
     @ApiProperty({
         example: "0123456789",
         required : true

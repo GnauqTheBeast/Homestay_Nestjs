@@ -10,6 +10,10 @@ import { LoginMiddleware } from './middlewares/login.middleware';
 import { HomestayModule } from './homestay/homestay.module';
 import { ImagesModule } from './images/images.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { SmsModule } from './sms/sms.module';
+import { OtpService } from './otp/otp.service';
+import { OtpModule } from './otp/otp.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -21,9 +25,12 @@ import { MulterModule } from '@nestjs/platform-express';
     CategoryModule,
     HomestayModule,
     ImagesModule,
+    SmsModule,
+    OtpModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, OtpService],
 })
 
 export class AppModule implements NestModule {

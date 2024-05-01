@@ -10,13 +10,16 @@ import { AuthService } from 'src/auth/auth.service';
 import { HomestayService } from 'src/homestay/homestay.service';
 import { HomestayModule } from 'src/homestay/homestay.module';
 import { Homestay } from 'src/homestay/entity/homestay.entity';
+import { OtpService } from 'src/otp/otp.service';
+import { OTP } from 'src/otp/entity/otp.entity';
+import { OtpModule } from 'src/otp/otp.module';
 
 dotenv.config()
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Users, Homestay]), ConfigModule],
+  imports: [TypeOrmModule.forFeature([Users, Homestay, OTP]), ConfigModule],
   controllers: [UsersController],
-  providers: [UsersService, AuthGuard, AuthService, HomestayService],
+  providers: [UsersService, AuthGuard, AuthService, HomestayService, OtpService],
   exports: [TypeOrmModule, UsersService]
 })
 export class UsersModule {}
