@@ -2,7 +2,7 @@ import slugify from 'slugify';
 import { Booking } from 'src/booking/entity/booking.entity';
 import { Images } from 'src/images/entity/images.entity';
 import { Users } from 'src/users/entity/users.entity';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, BeforeInsert, BeforeUpdate, UpdateDateColumn, OneToOne, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, BeforeInsert, BeforeUpdate, UpdateDateColumn, ManyToOne, AfterUpdate } from 'typeorm';
 
 @Entity()
 export class Homestay {

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Users } from './entity/users.entity';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -52,10 +52,12 @@ export class UsersController {
         return this.homestayService.createHomestay(createHomestayDto, access_token);
     }
 
-    // @UseGuards(HostGuard)
-    // @ApiBearerAuth()
-    // @Patch('host/edit-homestay')
-    // async editHomestay(@Body() editHomestayDto: EditHomestayDto): Promise<any> {
-    //     return this.homestayService.editHomestay(editHomestayDto);
-    // }
+    @UseGuards(HostGuard)
+    @ApiBearerAuth()
+    @Patch('host/edit-homestay/:homestayId')
+    async editHomestay(@Body() editHomestayDto: EditHomestayDto, @Param('homestayId') homestayId: string, @Req() req: Request): Promise<any> {
+        const authorization = req.headers['authorization'];
+        const access_token = authorization.replace("Bearer ", "");
+        return this.homestayService.editHomestay(editHomestayDto, Number(homestayId), access_token);
+    }
 }

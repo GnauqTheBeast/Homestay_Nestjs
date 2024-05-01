@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Homestay } from './entity/homestay.entity';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { CreateHomestayDto, EditHomestayDto } from './dto/homestay.dto';
 import { verifyJWT } from 'src/shareEntire/utils';
+import slugify from 'slugify';
 
 @Injectable()
 export class HomestayService {
@@ -20,10 +21,10 @@ export class HomestayService {
         });
         
         if (existedHomestay) {
-            throw new HttpException({
-                status: HttpStatus.FORBIDDEN,
-                error: 'This homestay existed',
-            }, HttpStatus.FORBIDDEN);
+          throw new HttpException({
+              status: HttpStatus.FORBIDDEN,
+              error: 'This homestay existed',
+          }, HttpStatus.FORBIDDEN);
         }
 
         const newHomestay = this.homestayRepository.create({...createHomestayDto, host: resp.id});
@@ -31,24 +32,61 @@ export class HomestayService {
         return this.homestayRepository.save(newHomestay);
     }
 
-    // async editHomestay(editHomestayDto: EditHomestayDto): Promise<any> {
-    //     try {
+    async editHomestay(editHomestayDto: EditHomestayDto, homestayId: number, access_token: string): Promise<any> {
+        try {
+          const resp = await verifyJWT(access_token);
+          const userId = resp.id;
 
-    //       await this.homestayRepository
-    //         .createQueryBuilder()
-    //         .update(Homestay)
-    //         .set(editHomestayDto)
-    //         .where("id = :id", { id: id })
-    //         .execute();
+          const existedHomestay = await this.homestayRepository.findOne({
+            where: { id: homestayId },
+            relations: ['host'] 
+          });
+
+          if (!existedHomestay) {
+            throw new HttpException({
+              status: HttpStatus.FORBIDDEN,
+              error: 'This homestay not existed',
+            }, HttpStatus.FORBIDDEN);
+          }
+
+          if (userId != existedHomestay.host.id) {
+            throw new HttpException({
+              status: HttpStatus.FORBIDDEN,
+              error: 'not permission',
+            }, HttpStatus.FORBIDDEN);
+          }
+
+          const homestayName = editHomestayDto.name;
+          const existedNameHomestay = await this.homestayRepository.findOne({
+            where: {
+              name: homestayName,
+              id: Not(existedHomestay.id)
+            }
+          });
+
+          if (existedNameHomestay) {
+            console.log(existedNameHomestay)
+            throw new HttpException({
+              status: HttpStatus.FORBIDDEN,
+              error: 'name existed',
+            }, HttpStatus.FORBIDDEN);
+          }
+
+          const slug = slugify(editHomestayDto.name, { lower: true });
+
+          await this.homestayRepository
+            .createQueryBuilder()
+            .update(Homestay)
+            .set({...editHomestayDto, slug: slug})
+            .where("id = :homestayId", { homestayId: homestayId })
+            .execute();
           
-    //       return this.usersRepository.findOneBy({
-    //         id: id
-    //       })
-    //     } catch (error) {
-    //       throw new HttpException({
-    //         status: HttpStatus.FORBIDDEN,
-    //         error: 'Wrong password',
-    //       }, HttpStatus.FORBIDDEN);
-    //     }
-    //   }
+          return this.homestayRepository.findOneBy({
+            id: homestayId
+          })
+        } catch (error) {
+          throw error;
+        }
+    }
+    
 }
