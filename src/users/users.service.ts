@@ -5,7 +5,6 @@ import { Users } from './entity/users.entity';
 import { LoginDto, RegisterDto } from 'src/auth/dto/auth.dto';
 import { httpErrors } from 'src/shareEntire/exception-filter/http-errors.const';
 import { generateToken, verifyJWT } from 'src/shareEntire/utils';
-import { ConfigService } from '@nestjs/config';
 import { UserRole } from './entity/users.entity';
 import { EditUsersDto, changeActiveUsersDto } from './dto/users.dto';
 import * as bcrypt from "bcrypt";
@@ -14,8 +13,7 @@ import { hashPassword } from 'src/shareEntire/utils/hash-password';
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(Users) private usersRepository: Repository<Users>,
-    private readonly configService: ConfigService
+    @InjectRepository(Users) private usersRepository: Repository<Users>
   ) {}
 
   async getAll(page: number): Promise<Users[]> {
@@ -32,15 +30,25 @@ export class UsersService {
 
     const maxPage = Math.ceil(userNum / 5)
     if(page > maxPage) {
-      throw new HttpException(httpErrors.PAGE_NOT_EXIST, HttpStatus.FORBIDDEN);
+      throw new HttpException(httpErrors.NOT_VALID_BOOKING, HttpStatus.FORBIDDEN);
     }
 
     return users;
   }
 
   async findOneByEmail(email: string): Promise<Users> {
-    const user = await this.usersRepository.findOneBy({
-      email: email
+    const user = await this.usersRepository.findOne({
+      where: {
+        email: email
+      },
+      select: {
+        id: true, 
+        fullName: true,
+        email: true, 
+        phone: true, 
+        role: true,
+        status: true,
+      }
     });
     return user; 
   }
@@ -107,8 +115,7 @@ export class UsersService {
     //generate access_token and refresh_token
     const userId = existedUser.id;
     const userRole = existedUser.role;
-    const userIsOtpConfirmed = existedUser.isOtpConfirmed;
-    const userIsPhoneConfirmed = existedUser.isPhoneNumberConfirmed;
+    const status = existedUser.status;
     const userPhone = existedUser.phone;
 
     const payload = {
@@ -116,8 +123,7 @@ export class UsersService {
       userEmail: userEmail, 
       role: userRole, 
       userPhone: userPhone, 
-      userIsPhoneConfirmed: userIsPhoneConfirmed,
-      userIsOtpConfirmed: userIsOtpConfirmed
+      status: status,
     };
     const expired_at = Date.now() + (+process.env.ACCESS_TOKEN_EXPIRE_IN_SEC * 1000);
 
@@ -194,7 +200,7 @@ export class UsersService {
       await this.usersRepository
       .createQueryBuilder()
       .update(Users)
-      .set({isOtpConfirmed: true})
+      .set({status: "active"})
       .where("email = :email", { email: userEmail })
       .execute();
 

@@ -1,9 +1,10 @@
-import { BadRequestException, Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpException, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { OtpService } from './otp.service';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { verifyJWT } from 'src/shareEntire/utils';
 import { OtpDto } from './dto/otp.dto';
+import { httpErrors } from 'src/shareEntire/exception-filter/http-errors.const';
 
 @Controller('otp')
 @ApiTags('otp')
@@ -21,8 +22,8 @@ export class OtpController {
         const resp = await verifyJWT(access_token);
         const userEmail = resp.userEmail;
 
-        if (resp.userIsOtpConfirmed) {
-            throw new BadRequestException('Email already confirmed');
+        if (resp.status === "active") {
+            throw new HttpException(httpErrors.USER_CONFIRMED, HttpStatus.FORBIDDEN);
         }
 
         return this.otpService.generateOTP(userEmail);

@@ -6,6 +6,8 @@ import * as crypto from 'crypto';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import * as nodemailer from 'nodemailer';
 import { UsersService } from 'src/users/users.service';
+import { emailBody2 } from 'src/shareEntire/utils';
+import { httpErrors } from 'src/shareEntire/exception-filter/http-errors.const';
 
 @Injectable()
 export class OtpService {
@@ -21,12 +23,12 @@ export class OtpService {
         const otp = this.otpRepository.create({ email: userEmail, code: otpCode, expirationTime });
         await this.otpRepository.save(otp);
 
-        await this.sendOTP(otpCode);
+        await this.sendOTP(otpCode, userEmail);
 
         return;
     }
 
-    async sendOTP(otpCode: string): Promise<any> {
+    async sendOTP(otpCode: string, userEmail: string): Promise<any> {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -34,27 +36,28 @@ export class OtpService {
                 pass: process.env.PASSWORD_APP
             }
         });
-
+        
         const mailOptions = {
-            from: 'quangnguyenngoc314@gmail.com',
-            to: 'wolverine5102003@gmail.com',
-            subject: 'Homestay: OTP confirm',
-            text: 'OTP: ' + otpCode
+            from: process.env.EMAIL_APP,
+            to: 'quangnguyenngoc314@gmail.com',
+            subject: 'Homestay: OTP confirmation',
+            html: emailBody2(otpCode)
         };
         
 
         transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-            console.log(error);
-        } else {
+            if (error) {
+                console.log(error);
+                
+            } 
+
             console.log('Email sent: ' + info.response);
-        }
         });
     }
 
     async verifyOTP(userEmail: string, otp: string): Promise<any> {
         const existedOtp = await this.otpRepository.findOneBy({
-                email: userEmail   
+            email: userEmail   
         });
 
         if (!existedOtp) {

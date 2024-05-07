@@ -1,6 +1,6 @@
 import { Homestay } from 'src/homestay/entity/homestay.entity';
 import { Users } from 'src/users/entity/users.entity';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, Timestamp } from 'typeorm';
 
 @Entity()
 export class Booking {
@@ -13,8 +13,11 @@ export class Booking {
   @Column()
   price: number;
 
-  @CreateDateColumn()
-  bookedAt: Date;
+  @Column({ type: 'date' })
+  checkIn: Date;
+
+  @Column({ type: 'date' })
+  checkOut: Date;
 
   @ManyToOne(() => Users, (users) => users.booking)
   users: Users

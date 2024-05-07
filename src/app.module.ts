@@ -14,6 +14,9 @@ import { SmsModule } from './sms/sms.module';
 import { OtpService } from './otp/otp.service';
 import { OtpModule } from './otp/otp.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { BookingController } from './booking/booking.controller';
+import { BookingService } from './booking/booking.service';
+import { BookingModule } from './booking/booking.module';
 
 @Module({
   imports: [
@@ -28,9 +31,10 @@ import { ScheduleModule } from '@nestjs/schedule';
     SmsModule,
     OtpModule,
     ScheduleModule.forRoot(),
+    BookingModule,
   ],
   controllers: [AppController],
-  providers: [AppService, OtpService],
+  providers: [AppService],
 })
 
 export class AppModule implements NestModule {

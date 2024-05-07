@@ -12,6 +12,58 @@ export class HomestayService {
         @InjectRepository(Homestay) private homestayRepository: Repository<Homestay>,
     ) {}
 
+    async getHomestay(slug: string): Promise<Homestay> {
+      const homestay = await this.homestayRepository.findOne({
+          where: {
+            slug: slug 
+          },
+          select: {
+            id: true, 
+            name: true, 
+            address: true, 
+            price: true, 
+            images: true, 
+            slug: true
+          }
+        },
+      );
+
+      if (!homestay) {
+        throw new HttpException({
+          status: HttpStatus.FORBIDDEN,
+          error: 'not exist',
+        }, HttpStatus.FORBIDDEN);
+      }
+
+      return homestay;
+    }
+
+    async getHomestayById(homestayId: number): Promise<Homestay> {
+      const homestay = await this.homestayRepository.findOne({
+          where: {
+            id: homestayId
+          },
+          select: {
+            id: true, 
+            name: true, 
+            address: true, 
+            price: true, 
+            images: true, 
+            slug: true
+          }
+        },
+      );
+
+      if (!homestay) {
+        throw new HttpException({
+          status: HttpStatus.FORBIDDEN,
+          error: 'not exist',
+        }, HttpStatus.FORBIDDEN);
+      }
+
+      return homestay;
+    }
+
     async createHomestay(createHomestayDto: CreateHomestayDto, access_token: string): Promise<Homestay> {
         const resp = await verifyJWT(access_token);
         
@@ -89,7 +141,7 @@ export class HomestayService {
         }
     }
 
-    async softDeleteHomestay(homestayId: number, access_token: string) {
+    async deleteHomestay(homestayId: number, access_token: string) {
       try {  
         const resp = await verifyJWT(access_token);
         const userId = resp.id;

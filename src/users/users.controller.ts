@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Users } from './entity/users.entity';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -63,10 +63,10 @@ export class UsersController {
 
     @UseGuards(HostGuard)
     @ApiBearerAuth()
-    @Patch('host/delete-homestay/:homestayId')
-    async softDeleteHomestay(@Param('homestayId') homestayId: string, @Req() req: Request): Promise<any> {
+    @Delete('host/delete-homestay/:homestayId')
+    async deleteHomestay(@Param('homestayId') homestayId: string, @Req() req: Request): Promise<any> {
         const authorization = req.headers['authorization'];
         const access_token = authorization.replace("Bearer ", "");
-        return this.homestayService.softDeleteHomestay(Number(homestayId), access_token);
+        return this.homestayService.deleteHomestay(Number(homestayId), access_token);
     }
 }
