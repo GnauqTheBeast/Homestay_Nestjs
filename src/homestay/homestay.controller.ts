@@ -8,6 +8,11 @@ import { Homestay } from './entity/homestay.entity';
 export class HomestayController {
     constructor(private readonly homestayService: HomestayService) {}
 
+    @Get('trending')
+    async getTrendingHomestay(): Promise<Homestay[]> {
+        return this.homestayService.getTrendingHomestay();
+    }
+
     @Get(':slug')
     async getHomestay(@Param('slug') slug: string): Promise<Homestay> {
         return this.homestayService.getHomestay(slug);

@@ -180,4 +180,22 @@ export class HomestayService {
         }, HttpStatus.FORBIDDEN);
       }
     }
+
+    async getTrendingHomestay(): Promise<Homestay[]> {
+      const homestays = await this.homestayRepository.find({
+        order: {
+          bookingCount: 'DESC'
+        },
+        select: {
+          id: true, 
+          name: true, 
+          address: true, 
+          price: true, 
+          images: true, 
+          slug: true
+        }
+      });
+
+      return homestays;
+    }
 }
