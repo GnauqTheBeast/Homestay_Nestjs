@@ -7,7 +7,7 @@ export class LoginDto {
     @IsNotEmpty()
     @ApiProperty({
         required: true,
-        example: "test1@gmail.com",
+        example: "quangnguyenngoc314@gmail.com",
     })
     email: string
 
@@ -15,7 +15,7 @@ export class LoginDto {
     @IsNotEmpty()
     @ApiProperty({
         required: true,
-        example: "quangdeptraiso1VN",
+        example: "1",
     })
     password: string
 }

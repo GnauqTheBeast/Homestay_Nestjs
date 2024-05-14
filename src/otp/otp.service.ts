@@ -39,7 +39,7 @@ export class OtpService {
         
         const mailOptions = {
             from: process.env.EMAIL_APP,
-            to: 'quangnguyenngoc314@gmail.com',
+            to: userEmail,
             subject: 'Homestay: OTP confirmation',
             html: emailBody2(otpCode)
         };

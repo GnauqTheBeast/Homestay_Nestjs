@@ -48,8 +48,10 @@ export class UsersService {
         phone: true, 
         role: true,
         status: true,
+        password: true,
       }
     });
+
     return user; 
   }
 
@@ -96,6 +98,7 @@ export class UsersService {
   async loginUser(loginDto: LoginDto): Promise<any> {
     const userEmail = loginDto.email;
     const existedUser = await this.findOneByEmail(userEmail);
+    console.log(existedUser);
     // user existed
     if (!existedUser) {
       throw new HttpException({
@@ -134,7 +137,7 @@ export class UsersService {
       expiresIn: (+process.env.REFRESH_TOKEN_EXPIRE_IN_SEC * 1000),
     });
 
-    return { expired_at, access_token, refresh_token, userId, userEmail};
+    return { expired_at, access_token, refresh_token, userId, userEmail, status };
   }
 
   async updateUser(id: number): Promise<Users> {
