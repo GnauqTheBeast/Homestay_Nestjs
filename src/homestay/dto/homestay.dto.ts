@@ -18,6 +18,12 @@ export class CreateHomestayDto {
     })
     address: string
 
+    @IsString()
+    @ApiProperty({
+        example: "https://images.unsplash.com/photo-1648995505975-8fe3ebc7b253?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    })
+    images: string
+
     @IsNumber()
     @IsNotEmpty()
     @ApiProperty({
@@ -43,6 +49,12 @@ export class EditHomestayDto {
         example: "Khanh Lai - Tay Do - Hung Ha - Thai Binh",
     })
     address: string
+
+    @IsString()
+    @ApiProperty({
+        example: "https://images.unsplash.com/photo-1648995505975-8fe3ebc7b253?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    })
+    images: string
 
     @IsNumber()
     @IsNotEmpty()

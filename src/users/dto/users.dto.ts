@@ -23,12 +23,6 @@ export class EditUsersDto {
 
     @IsString()
     @ApiProperty({
-        example: "Edited password",
-    })
-    password: string
-
-    @IsString()
-    @ApiProperty({
         example: "Edited Phone",
     })
     phone: string

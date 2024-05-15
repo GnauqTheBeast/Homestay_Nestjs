@@ -193,6 +193,60 @@ export class HomestayService {
           price: true, 
           images: true, 
           slug: true
+        },
+        take: 4
+      });
+
+      return homestays;
+    }
+
+    async getCheapestHomestay(): Promise<Homestay[]> {
+      const homestays = await this.homestayRepository.find({
+        order: {
+          price: 'ASC'
+        },
+        select: {
+          id: true, 
+          name: true, 
+          address: true, 
+          price: true, 
+          images: true, 
+          slug: true
+        },
+        take: 4
+      });
+
+      return homestays;
+    }
+
+    async getTopHomestay(): Promise<Homestay[]> {
+      const homestays = await this.homestayRepository.find({
+        order: {
+          bookingCount: 'DESC'
+        },
+        select: {
+          id: true, 
+          name: true, 
+          address: true, 
+          price: true, 
+          images: true, 
+          slug: true
+        },
+        take: 8
+      });
+
+      return homestays;
+    }
+
+    async getAllHomestay(): Promise<Homestay[]> {
+      const homestays = await this.homestayRepository.find({
+        select: {
+          id: true, 
+          name: true, 
+          address: true, 
+          price: true, 
+          images: true, 
+          slug: true
         }
       });
 

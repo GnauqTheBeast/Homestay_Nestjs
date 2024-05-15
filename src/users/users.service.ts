@@ -158,7 +158,7 @@ export class UsersService {
       const resp = await verifyJWT(access_token);
       const id = resp.id;
 
-      editUsersDto.password = hashPassword(editUsersDto.password)
+      // editUsersDto.password = hashPassword(editUsersDto.password)
 
       await this.usersRepository
         .createQueryBuilder()
@@ -173,7 +173,7 @@ export class UsersService {
     } catch (error) {
       throw new HttpException({
         status: HttpStatus.FORBIDDEN,
-        error: 'Wrong password',
+        error: 'Can not edit user',
       }, HttpStatus.FORBIDDEN);
     }
   }
