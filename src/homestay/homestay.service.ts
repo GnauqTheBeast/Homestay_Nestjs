@@ -23,7 +23,10 @@ export class HomestayService {
             address: true, 
             price: true, 
             images: true, 
-            slug: true
+            slug: true,
+            rateStar: true,
+            description: true,
+            service: true
           }
         },
       );
@@ -49,7 +52,10 @@ export class HomestayService {
             address: true, 
             price: true, 
             images: true, 
-            slug: true
+            slug: true,
+            rateStar: true,
+            description: true,
+            service: true
           }
         },
       );
@@ -192,7 +198,10 @@ export class HomestayService {
           address: true, 
           price: true, 
           images: true, 
-          slug: true
+          slug: true,
+          rateStar: true,
+          description: true,
+          service: true
         },
         take: 4
       });
@@ -211,7 +220,10 @@ export class HomestayService {
           address: true, 
           price: true, 
           images: true, 
-          slug: true
+          slug: true,
+          rateStar: true,
+          description: true,
+          service: true
         },
         take: 4
       });
@@ -230,7 +242,10 @@ export class HomestayService {
           address: true, 
           price: true, 
           images: true, 
-          slug: true
+          slug: true,
+          rateStar: true,
+          description: true,
+          service: true
         },
         take: 8
       });
@@ -246,7 +261,10 @@ export class HomestayService {
           address: true, 
           price: true, 
           images: true, 
-          slug: true
+          slug: true,
+          description: true,
+          rateStar: true,
+          service: true
         }
       });
 

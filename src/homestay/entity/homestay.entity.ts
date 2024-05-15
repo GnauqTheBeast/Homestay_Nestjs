@@ -50,6 +50,12 @@ export class Homestay {
   @Column({ type: "text", nullable: false })
   slug: string;
 
+  @Column({ type: "text", default: "Welcome to our cozy homestay nestled in the heart of nature. Our charming retreat offers a peaceful escape from the hustle and bustle of city life", nullable: false })
+  description: string;
+
+  @Column({ type: "text", default: "WiFi, Kitchen, Air Conditioning, Free Parking", nullable: false })
+  service: string;
+
   @BeforeInsert()
   @BeforeUpdate()
   generateSlug() {
