@@ -11,12 +11,11 @@ import { HomestayModule } from './homestay/homestay.module';
 import { ImagesModule } from './images/images.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { SmsModule } from './sms/sms.module';
-import { OtpService } from './otp/otp.service';
 import { OtpModule } from './otp/otp.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { BookingController } from './booking/booking.controller';
-import { BookingService } from './booking/booking.service';
 import { BookingModule } from './booking/booking.module';
+import { CommentsController } from './comments/comments.controller';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -32,6 +31,7 @@ import { BookingModule } from './booking/booking.module';
     OtpModule,
     ScheduleModule.forRoot(),
     BookingModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

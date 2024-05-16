@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Patch } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { HomestayService } from './homestay.service';
 import { Homestay } from './entity/homestay.entity';
@@ -31,5 +31,10 @@ export class HomestayController {
     @Get(':slug')
     async getHomestay(@Param('slug') slug: string): Promise<Homestay> {
         return this.homestayService.getHomestay(slug);
+    }
+
+    @Patch('view-increase/:slug')
+    async viewIncrease(@Param('slug') slug: string): Promise<any> {
+        return this.homestayService.viewIncrease(slug);
     }
 }

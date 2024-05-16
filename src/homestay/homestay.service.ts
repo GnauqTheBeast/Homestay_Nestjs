@@ -17,17 +17,6 @@ export class HomestayService {
           where: {
             slug: slug 
           },
-          select: {
-            id: true, 
-            name: true, 
-            address: true, 
-            price: true, 
-            images: true, 
-            slug: true,
-            rateStar: true,
-            description: true,
-            service: true
-          }
         },
       );
 
@@ -46,17 +35,6 @@ export class HomestayService {
           where: {
             id: homestayId
           },
-          select: {
-            id: true, 
-            name: true, 
-            address: true, 
-            price: true, 
-            images: true, 
-            slug: true,
-            rateStar: true,
-            description: true,
-            service: true
-          }
         },
       );
 
@@ -190,18 +168,7 @@ export class HomestayService {
     async getTrendingHomestay(): Promise<Homestay[]> {
       const homestays = await this.homestayRepository.find({
         order: {
-          bookingCount: 'DESC'
-        },
-        select: {
-          id: true, 
-          name: true, 
-          address: true, 
-          price: true, 
-          images: true, 
-          slug: true,
-          rateStar: true,
-          description: true,
-          service: true
+          viewCount: 'DESC'
         },
         take: 4
       });
@@ -214,17 +181,6 @@ export class HomestayService {
         order: {
           price: 'ASC'
         },
-        select: {
-          id: true, 
-          name: true, 
-          address: true, 
-          price: true, 
-          images: true, 
-          slug: true,
-          rateStar: true,
-          description: true,
-          service: true
-        },
         take: 4
       });
 
@@ -236,17 +192,6 @@ export class HomestayService {
         order: {
           bookingCount: 'DESC'
         },
-        select: {
-          id: true, 
-          name: true, 
-          address: true, 
-          price: true, 
-          images: true, 
-          slug: true,
-          rateStar: true,
-          description: true,
-          service: true
-        },
         take: 8
       });
 
@@ -254,20 +199,17 @@ export class HomestayService {
     }
 
     async getAllHomestay(): Promise<Homestay[]> {
-      const homestays = await this.homestayRepository.find({
-        select: {
-          id: true, 
-          name: true, 
-          address: true, 
-          price: true, 
-          images: true, 
-          slug: true,
-          description: true,
-          rateStar: true,
-          service: true
-        }
-      });
+      const homestays = await this.homestayRepository.find({});
 
       return homestays;
+    }
+
+    async viewIncrease(slug: string): Promise<void> {
+      await this.homestayRepository
+          .createQueryBuilder()
+          .update(Homestay)
+          .set({ viewCount: () => "viewCount + 1" })
+          .where("slug = :slug", { slug })
+          .execute();
     }
 }

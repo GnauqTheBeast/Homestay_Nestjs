@@ -1,7 +1,7 @@
 import {
     Controller,
     UseInterceptors,
-    ClassSerializerInterceptor, Post, Req, BadRequestException,
+    ClassSerializerInterceptor, Post, Req, 
     UseGuards,
     HttpException,
     HttpStatus,

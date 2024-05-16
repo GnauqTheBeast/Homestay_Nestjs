@@ -1,5 +1,6 @@
 import slugify from 'slugify';
 import { Booking } from 'src/booking/entity/booking.entity';
+import { Comments } from 'src/comments/entity/comments.entity';
 import { Images } from 'src/images/entity/images.entity';
 import { Users } from 'src/users/entity/users.entity';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, BeforeInsert, BeforeUpdate, UpdateDateColumn, ManyToOne, AfterUpdate } from 'typeorm';
@@ -70,4 +71,7 @@ export class Homestay {
 
   @OneToMany(() => Images, (images) => images.homestay)
   photos: Images[]
+
+  @OneToMany(() => Comments, (comments) => comments.homestay, {onDelete: 'CASCADE'})
+  comments: Comments;
 }

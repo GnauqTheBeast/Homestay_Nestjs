@@ -1,4 +1,5 @@
 import { Booking } from 'src/booking/entity/booking.entity';
+import { Comments } from 'src/comments/entity/comments.entity';
 import { Homestay } from 'src/homestay/entity/homestay.entity';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, Index } from 'typeorm';
 export enum UserRole {
@@ -51,4 +52,7 @@ export class Users {
 
   @OneToMany(() => Homestay, (homestay) => homestay.host, {onDelete: 'CASCADE'})
   homestay: Homestay
+
+  @OneToMany(() => Comments, (comments) => comments.user, {onDelete: 'CASCADE'})
+  comments: Comments;
 }

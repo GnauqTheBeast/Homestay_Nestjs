@@ -8,11 +8,9 @@ import * as dotenv from 'dotenv';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { AuthService } from 'src/auth/auth.service';
 import { HomestayService } from 'src/homestay/homestay.service';
-import { HomestayModule } from 'src/homestay/homestay.module';
 import { Homestay } from 'src/homestay/entity/homestay.entity';
 import { OtpService } from 'src/otp/otp.service';
 import { OTP } from 'src/otp/entity/otp.entity';
-import { OtpModule } from 'src/otp/otp.module';
 
 dotenv.config()
 

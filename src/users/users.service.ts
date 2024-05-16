@@ -117,14 +117,14 @@ export class UsersService {
 
     //generate access_token and refresh_token
     const userId = existedUser.id;
-    const userRole = existedUser.role;
+    const role = existedUser.role;
     const status = existedUser.status;
     const userPhone = existedUser.phone;
 
     const payload = {
       id: userId, 
       userEmail: userEmail, 
-      role: userRole, 
+      role: role, 
       userPhone: userPhone, 
       status: status,
     };
@@ -137,7 +137,7 @@ export class UsersService {
       expiresIn: (+process.env.REFRESH_TOKEN_EXPIRE_IN_SEC * 1000),
     });
 
-    return { expired_at, access_token, refresh_token, userId, userEmail, status };
+    return { expired_at, access_token, refresh_token, userId, userEmail, status, role };
   }
 
   async updateUser(id: number): Promise<Users> {
