@@ -54,19 +54,19 @@ export class UsersController {
 
     @UseGuards(HostGuard)
     @ApiBearerAuth()
-    @Patch('host/edit-homestay/:homestayId')
-    async editHomestay(@Body() editHomestayDto: EditHomestayDto, @Param('homestayId') homestayId: string, @Req() req: Request): Promise<any> {
+    @Patch('host/edit-homestay/:slug')
+    async editHomestay(@Body() editHomestayDto: EditHomestayDto, @Param('slug') slug: string, @Req() req: Request): Promise<any> {
         const authorization = req.headers['authorization'];
         const access_token = authorization.replace("Bearer ", "");
-        return this.homestayService.editHomestay(editHomestayDto, Number(homestayId), access_token);
+        return this.homestayService.editHomestay(editHomestayDto, slug, access_token);
     }
 
     @UseGuards(HostGuard)
     @ApiBearerAuth()
-    @Delete('host/delete-homestay/:homestayId')
-    async deleteHomestay(@Param('homestayId') homestayId: string, @Req() req: Request): Promise<any> {
+    @Delete('host/delete-homestay/:slug')
+    async deleteHomestay(@Param('slug') slug: string, @Req() req: Request): Promise<any> {
         const authorization = req.headers['authorization'];
         const access_token = authorization.replace("Bearer ", "");
-        return this.homestayService.deleteHomestay(Number(homestayId), access_token);
+        return this.homestayService.deleteHomestay(slug, access_token);
     }
 }

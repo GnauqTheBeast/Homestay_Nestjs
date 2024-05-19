@@ -68,13 +68,15 @@ export class HomestayService {
         return this.homestayRepository.save(newHomestay);
     }
 
-    async editHomestay(editHomestayDto: EditHomestayDto, homestayId: number, access_token: string): Promise<any> {
+    async editHomestay(editHomestayDto: EditHomestayDto, slugHomestay: string, access_token: string): Promise<any> {
         try {
           const resp = await verifyJWT(access_token);
           const userId = resp.id;
 
           const existedHomestay = await this.homestayRepository.findOne({
-            where: { id: homestayId },
+            where: { 
+              slug: slugHomestay,
+            },
             relations: ['host'] 
           });
 
@@ -96,7 +98,7 @@ export class HomestayService {
           const existedNameHomestay = await this.homestayRepository.findOne({
             where: {
               name: homestayName,
-              id: Not(existedHomestay.id)
+              slug: Not(existedHomestay.slug)
             }
           });
 
@@ -114,28 +116,26 @@ export class HomestayService {
             .createQueryBuilder()
             .update(Homestay)
             .set({...editHomestayDto, slug: slug})
-            .where("id = :homestayId", { homestayId: homestayId })
+            .where("slug = :slug", { slug: slugHomestay })
             .execute();
           
           return this.homestayRepository.findOneBy({
-            id: homestayId
+            slug: slugHomestay
           })
         } catch (error) {
           throw error;
         }
     }
 
-    async deleteHomestay(homestayId: number, access_token: string) {
+    async deleteHomestay(slug: string, access_token: string) {
       try {  
         const resp = await verifyJWT(access_token);
         const userId = resp.id;
 
         const existedHomestay = await this.homestayRepository.findOne({
-          where: { id: homestayId },
+          where: { slug: slug },
           relations: ['host'] 
         });
-
-        console.log(existedHomestay);
 
         if (!existedHomestay) {
           throw new HttpException({
@@ -155,7 +155,7 @@ export class HomestayService {
           .createQueryBuilder()
           .delete()
           .from(Homestay)
-          .where("id = :id", { id: homestayId })
+          .where("slug = :slug", { slug: slug })
           .execute()
       } catch (error) {
         throw new HttpException({
@@ -211,5 +211,20 @@ export class HomestayService {
           .set({ viewCount: () => "viewCount + 1" })
           .where("slug = :slug", { slug })
           .execute();
+    }
+
+    async getAllUserHomestays(userId: number): Promise<Homestay[]> {
+      const homestays = await this.homestayRepository.find({
+        where:{
+          host: {
+            id: userId
+          }
+        },
+        relations: {
+          host: true,
+        }
+      })
+
+      return homestays;
     }
 }

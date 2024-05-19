@@ -13,6 +13,11 @@ export class HomestayController {
         return this.homestayService.getAllHomestay();
     }
 
+    @Get(':userId/all')
+    async getAllUserHomestays(@Param('userId') userId: string): Promise<Homestay[]> {
+        return this.homestayService.getAllUserHomestays(+userId);
+    }
+
     @Get('trending')
     async getTrendingHomestay(): Promise<Homestay[]> {
         return this.homestayService.getTrendingHomestay();

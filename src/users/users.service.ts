@@ -98,8 +98,6 @@ export class UsersService {
   async loginUser(loginDto: LoginDto): Promise<any> {
     const userEmail = loginDto.email;
     const existedUser = await this.findOneByEmail(userEmail);
-    console.log(existedUser);
-    // user existed
     if (!existedUser) {
       throw new HttpException({
         status: HttpStatus.FORBIDDEN,
