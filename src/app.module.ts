@@ -16,6 +16,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { BookingModule } from './booking/booking.module';
 import { CommentsController } from './comments/comments.controller';
 import { CommentsModule } from './comments/comments.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { CommentsModule } from './comments/comments.module';
     ScheduleModule.forRoot(),
     BookingModule,
     CommentsModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

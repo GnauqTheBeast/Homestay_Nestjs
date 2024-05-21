@@ -20,8 +20,8 @@ export class AdminController {
     @UseGuards(AdminGuard)
     @ApiBearerAuth()
     @Get('all-users')
-    async getAllUsers(@Query('page') page: number) {
-        return this.adminService.getAll(page);
+    async getAllUsers() {
+        return this.adminService.getAll();
     }
 
     @UseGuards(AdminGuard)

@@ -54,8 +54,8 @@ export class AdminService {
         return { expired_at, access_token, refresh_token, existedUser };
     }
 
-    async getAll(page: number): Promise<Users[]> {
-        const users = await this.usersService.getAll(page);
+    async getAll(): Promise<Users[]> {
+        const users = await this.usersService.getAll();
         return users;
     }
 

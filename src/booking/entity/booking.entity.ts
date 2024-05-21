@@ -19,6 +19,17 @@ export class Booking {
   @Column({ type: 'date' })
   checkOut: Date;
 
+  @Column()
+  numPeople: number;
+
+  @Column({ 
+    enum: ['pending', 'confirmed', 'canceled'],
+    default: 'pending',
+    nullable: false,
+    type: 'enum',
+  })
+  status: string;
+
   @ManyToOne(() => Users, (users) => users.booking)
   users: Users
 

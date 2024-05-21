@@ -16,22 +16,22 @@ export class UsersService {
     @InjectRepository(Users) private usersRepository: Repository<Users>
   ) {}
 
-  async getAll(page: number): Promise<Users[]> {
-    if(page < 1) {
-      throw new HttpException({
-        status: HttpStatus.NOT_FOUND,
-        error: 'Not found',
-      }, HttpStatus.FORBIDDEN);
-    }
+  async getAll(): Promise<Users[]> {
+    // if(page < 1) {
+    //   throw new HttpException({
+    //     status: HttpStatus.NOT_FOUND,
+    //     error: 'Not found',
+    //   }, HttpStatus.FORBIDDEN);
+    // }
     const [users, userNum] = await this.usersRepository.findAndCount({
-      skip: 5 * (page - 1),
-      take: 5,
+      // skip: 5 * (page - 1),
+      // take: 5,
     });
 
-    const maxPage = Math.ceil(userNum / 5)
-    if(page > maxPage) {
-      throw new HttpException(httpErrors.NOT_VALID_BOOKING, HttpStatus.FORBIDDEN);
-    }
+    // const maxPage = Math.ceil(userNum / 5)
+    // if(page > maxPage) {
+    //   throw new HttpException(httpErrors.NOT_VALID_BOOKING, HttpStatus.FORBIDDEN);
+    // }
 
     return users;
   }
